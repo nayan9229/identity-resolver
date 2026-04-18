@@ -67,7 +67,7 @@ yarn add @nayan9229/identity-resolver
 ### CDN / `<script>` tag (no build step)
 
 ```html
-<!-- Pin to a specific release -->
+<!-- Pin to a specific release (recommended for production)-->
 <script src="https://cdn.jsdelivr.net/gh/nayan9229/identity-resolver@1.0.0/dist/index.umd.js"></script>
 <script>
   const { resolveIdentitySignals, patchBidRequest } = OpenRTBIdentityResolver;
@@ -76,6 +76,8 @@ yarn add @nayan9229/identity-resolver
 <!-- Always latest -->
 <script src="https://cdn.jsdelivr.net/gh/nayan9229/identity-resolver@latest/dist/index.umd.js"></script>
 ```
+
+> **Note:** jsDelivr serves files directly from the GitHub repository. The `dist/` folder is intentionally committed to the repo (not gitignored) so jsDelivr can find it. The CI workflow rebuilds and re-commits `dist/` automatically on every release — you never need to manually commit built files.
 
 ---
 

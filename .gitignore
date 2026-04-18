@@ -1,5 +1,8 @@
 node_modules/
-dist/
 coverage/
 *.log
 .DS_Store
+
+# dist/ is intentionally tracked so jsDelivr can serve it directly:
+# https://cdn.jsdelivr.net/gh/YOUR_ORG/openrtb-identity-resolver@latest/dist/index.umd.js
+# The build step in CI regenerates dist/ before publishing.

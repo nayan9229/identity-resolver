@@ -1,5 +1,5 @@
 /**
- * @module identity-resolver
+ * @module openrtb-identity-resolver
  * @description Reads browser cookies and assembles OpenRTB 2.5/2.6
  *   user.buyeruid, user.eids[], device identity, and consent signals.
  *
