@@ -1,6 +1,6 @@
 {
   "name": "@nayan9229/identity-resolver",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Ultralight OpenRTB identity & consent resolver. Reads browser cookies to assemble user.buyeruid, user.eids[], DEVICE_ID, and GDPR/CCPA signals for programmatic ad bid requests.",
   "keywords": [
     "openrtb",
@@ -53,8 +53,8 @@
     "build:watch": "rollup -c --watch",
     "test": "node scripts/test.mjs",
     "test:coverage": "node scripts/test.mjs --coverage",
-    "test:ci":        "node scripts/test.mjs --coverage --ci",
-    "test:debug":     "node scripts/test.mjs --detectOpenHandles --verbose",
+    "test:ci": "node scripts/test.mjs --coverage --ci",
+    "test:debug": "node scripts/test.mjs --detectOpenHandles --verbose",
     "lint": "eslint src/**/*.js",
     "size": "size-limit",
     "prepublishOnly": "pnpm run lint && pnpm run test:ci && pnpm run build"
