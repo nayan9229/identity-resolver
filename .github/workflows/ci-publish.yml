@@ -36,14 +36,13 @@ jobs:
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
-        with:
-          version: 9          # resolves to latest pnpm 9.x
+        # version is intentionally omitted — read from packageManager in package.json
 
       - name: Setup Node ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-          cache: pnpm          # uses pnpm store for caching
+          cache: pnpm
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -91,8 +90,7 @@ jobs:
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
-        with:
-          version: 9
+        # version is intentionally omitted — read from packageManager in package.json
 
       - name: Setup Node 20
         uses: actions/setup-node@v4
