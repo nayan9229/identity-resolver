@@ -121,8 +121,10 @@ jobs:
         run: |
           TAG="${{ github.event.release.tag_name }}"
           VERSION="${TAG#v}"
-          pnpm version "$VERSION" --no-git-tag-version
-          echo "Publishing version: $VERSION"
+          # Use the dedicated script — idempotent, works whether or not
+          # package.json already contains this version (avoids pnpm/npm
+          # "Version not changed" errors on pre-bumped repos or re-runs).
+          VERSION="$VERSION" node scripts/stamp-version.mjs
 
       - name: Publish with provenance
         run: pnpm publish --no-git-checks --provenance
