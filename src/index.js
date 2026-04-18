@@ -182,7 +182,7 @@ function resolveEids(c) {
   const ramp = c._lr_env || c.liverampId;
   if (ramp) { push(makeEid('liveramp.com', ramp, 3)); claim(ramp); }
 
-  const id5raw = safeJSON(c.id5id || '');
+  const id5raw = safeJSON(safeDecode(c.id5id || ''));
   if (id5raw?.universal_uid) {
     push(makeEid('id5-sync.com', id5raw.universal_uid, 3, { linkType: id5raw.link_type || 0 }));
     claim(id5raw.universal_uid);
@@ -191,6 +191,7 @@ function resolveEids(c) {
   const pbjsId5 = safeJSON(safeDecode(c.pbjs_id5id || ''));
   if (pbjsId5?.uid && !eids.find((e) => e.source === 'id5-sync.com')) {
     push(makeEid('id5-sync.com', pbjsId5.uid, 3));
+    claim(pbjsId5.uid);
   }
 
   const pubcid =

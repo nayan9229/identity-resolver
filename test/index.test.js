@@ -311,3 +311,103 @@ describe('Edge cases', () => {
     expect(s.eids).toBeNull();
   });
 });
+
+// ---------------------------------------------------------------------------
+// Amplitude device ID fallback
+// ---------------------------------------------------------------------------
+describe('Amplitude device ID fallback', () => {
+  test('extracts device ID from ab.storage.deviceId.* cookie', () => {
+    const val = encodeURIComponent(JSON.stringify({ g: 'amp-device-abc123', e: undefined }));
+    const s = resolveIdentitySignals(`ab.storage.deviceId.inst-xyz=${val}`);
+    expect(s.deviceId).toBe('amp-device-abc123');
+    expect(s.deviceIdSource).toBe('amplitude_device');
+  });
+
+  test('returns null deviceId when amplitude cookie value has no g field', () => {
+    const val = encodeURIComponent(JSON.stringify({ other: 'val' }));
+    const s = resolveIdentitySignals(`ab.storage.deviceId.inst-xyz=${val}`);
+    expect(s.deviceId).toBeNull();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// LiveRamp RampID
+// ---------------------------------------------------------------------------
+describe('LiveRamp RampID — Tier 2', () => {
+  test('resolves liveramp.com eid from _lr_env cookie', () => {
+    const s = resolveIdentitySignals('_lr_env=rampid-token-xyz');
+    expect(s.eidSources).toContain('liveramp.com');
+    expect(s.identityTier).toBe(2);
+    expect(s.buyeruid).toBe('rampid-token-xyz');
+  });
+
+  test('resolves liveramp.com eid from liverampId cookie', () => {
+    const s = resolveIdentitySignals('liverampId=rampid-via-named-cookie');
+    expect(s.eidSources).toContain('liveramp.com');
+    expect(s.buyeruid).toBe('rampid-via-named-cookie');
+  });
+});
+
+// ---------------------------------------------------------------------------
+// ID5
+// ---------------------------------------------------------------------------
+describe('ID5 universal ID — Tier 2', () => {
+  test('resolves id5-sync.com eid from id5id cookie', () => {
+    const val = JSON.stringify({ universal_uid: 'id5-uid-abc', link_type: 2 });
+    const s = resolveIdentitySignals(`id5id=${encodeURIComponent(val)}`);
+    expect(s.eidSources).toContain('id5-sync.com');
+    expect(s.identityTier).toBe(2);
+    const eid = s.eids.find((e) => e.source === 'id5-sync.com');
+    expect(eid.uids[0].ext.linkType).toBe(2);
+  });
+
+  test('resolves id5-sync.com from pbjs_id5id when id5id absent', () => {
+    const val = JSON.stringify({ uid: 'pbjs-id5-uid' });
+    const s = resolveIdentitySignals(`pbjs_id5id=${encodeURIComponent(val)}`);
+    expect(s.eidSources).toContain('id5-sync.com');
+    expect(s.buyeruid).toBe('pbjs-id5-uid');
+  });
+
+  test('id5id takes priority over pbjs_id5id — no duplicate source', () => {
+    const id5val  = JSON.stringify({ universal_uid: 'id5-primary' });
+    const pbjsval = JSON.stringify({ uid: 'pbjs-secondary' });
+    const s = resolveIdentitySignals(
+      `id5id=${encodeURIComponent(id5val)}; pbjs_id5id=${encodeURIComponent(pbjsval)}`
+    );
+    const id5eids = s.eids.filter((e) => e.source === 'id5-sync.com');
+    expect(id5eids).toHaveLength(1);
+    expect(id5eids[0].uids[0].id).toBe('id5-primary');
+  });
+});
+
+// ---------------------------------------------------------------------------
+// pubcid (Prebid Shared ID)
+// ---------------------------------------------------------------------------
+describe('pubcid — Tier 2', () => {
+  test('resolves pubcid.org eid from _pubcid cookie', () => {
+    const s = resolveIdentitySignals('_pubcid=pubcid-value-abc');
+    expect(s.eidSources).toContain('pubcid.org');
+  });
+
+  test('resolves pubcid.org eid from pbjs_sharedID cookie', () => {
+    const val = JSON.stringify({ id: 'shared-id-xyz' });
+    const s = resolveIdentitySignals(`pbjs_sharedID=${encodeURIComponent(val)}`);
+    expect(s.eidSources).toContain('pubcid.org');
+    expect(s.buyeruid).toBe('shared-id-xyz');
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Lotame + Tapad
+// ---------------------------------------------------------------------------
+describe('Lotame and Tapad — Tier 2', () => {
+  test('resolves lotame.com eid from _cc_id cookie', () => {
+    const s = resolveIdentitySignals('_cc_id=lotame-cc-id-abc');
+    expect(s.eidSources).toContain('lotame.com');
+  });
+
+  test('resolves tapad.com eid from TapAd_DID cookie', () => {
+    const s = resolveIdentitySignals('TapAd_DID=tapad-device-id-xyz');
+    expect(s.eidSources).toContain('tapad.com');
+  });
+});
