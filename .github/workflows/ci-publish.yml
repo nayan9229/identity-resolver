@@ -12,11 +12,6 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-permissions:
-  contents: read
-  packages: write
-  id-token: write   # required for npm provenance
-
 jobs:
   # -------------------------------------------------------------------------
   # Job 1: Lint + Test + Build  (every push and PR, Node 18 / 20 / 22 matrix)
@@ -24,6 +19,8 @@ jobs:
   ci:
     name: Lint · Test · Build (Node ${{ matrix.node-version }})
     runs-on: ubuntu-latest
+    permissions:
+      contents: read   # checkout only
 
     strategy:
       fail-fast: false
@@ -83,6 +80,10 @@ jobs:
     needs: ci
     runs-on: ubuntu-latest
     if: github.event_name == 'release' && github.event.action == 'published'
+    permissions:
+      contents: write  # attach dist files to the GitHub Release
+      packages: write  # publish to GitHub Packages registry
+      id-token: write  # npm provenance via OIDC
 
     steps:
       - name: Checkout
