@@ -12,7 +12,7 @@ const terserOptions = {
   format: { comments: false },
 };
 
-const banner = `/*! openrtb-identity-resolver v${process.env.npm_package_version} | MIT */`;
+const banner = `/*! identity-resolver v${process.env.npm_package_version} | MIT */`;
 
 export default [
   // ESM — for bundlers (webpack, rollup, vite)

@@ -1,5 +1,5 @@
 /**
- * @module openrtb-identity-resolver
+ * @module identity-resolver
  * @description Reads browser cookies and assembles OpenRTB 2.5/2.6
  *   user.buyeruid, user.eids[], device identity, and consent signals.
  *
@@ -37,12 +37,12 @@ export function parseCookies(cookieString) {
 // ---------------------------------------------------------------------------
 function safeDecode(str) {
   if (!str) return str;
-  try { return decodeURIComponent(str); } catch (_) { return str; }
+  try { return decodeURIComponent(str); } catch { return str; }
 }
 
 function safeJSON(str) {
   if (!str) return null;
-  try { return JSON.parse(str); } catch (_) { return null; }
+  try { return JSON.parse(str); } catch { return null; }
 }
 
 function makeEid(source, id, atype, ext) {
