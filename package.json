@@ -1,5 +1,5 @@
 {
-  "name": "@YOUR_GITHUB_ORG/openrtb-identity-resolver",
+  "name": "@nayan9229/identity-resolver",
   "version": "1.0.0",
   "description": "Ultralight OpenRTB identity & consent resolver. Reads browser cookies to assemble user.buyeruid, user.eids[], DEVICE_ID, and GDPR/CCPA signals for programmatic ad bid requests.",
   "keywords": [
@@ -20,13 +20,13 @@
     "ttd",
     "criteo"
   ],
-  "homepage": "https://github.com/YOUR_GITHUB_ORG/openrtb-identity-resolver",
+  "homepage": "https://github.com/nayan9229/identity-resolver",
   "bugs": {
-    "url": "https://github.com/YOUR_GITHUB_ORG/openrtb-identity-resolver/issues"
+    "url": "https://github.com/nayan9229/identity-resolver/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/YOUR_GITHUB_ORG/openrtb-identity-resolver.git"
+    "url": "git+https://github.com/nayan9229/identity-resolver.git"
   },
   "license": "MIT",
   "type": "module",

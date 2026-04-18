@@ -2,9 +2,9 @@
 
 > Ultralight browser cookie reader that assembles `user.buyeruid`, `user.eids[]`, device identity, and GDPR/CCPA consent signals for OpenRTB 2.5/2.6 bid requests — with a four-tier fallback strategy designed for ≥95% ad fill rate.
 
-[![CI](https://github.com/YOUR_GITHUB_ORG/openrtb-identity-resolver/actions/workflows/ci-publish.yml/badge.svg)](https://github.com/YOUR_GITHUB_ORG/openrtb-identity-resolver/actions/workflows/ci-publish.yml)
-[![npm version](https://img.shields.io/github/package-json/v/YOUR_GITHUB_ORG/openrtb-identity-resolver)](https://github.com/YOUR_GITHUB_ORG/openrtb-identity-resolver/packages)
-[![Bundle size](https://img.shields.io/badge/gzip-~1.5kB-brightgreen)](https://github.com/YOUR_GITHUB_ORG/openrtb-identity-resolver)
+[![CI](https://github.com/nayan9229/identity-resolver/actions/workflows/ci-publish.yml/badge.svg)](https://github.com/nayan9229/identity-resolver/actions/workflows/ci-publish.yml)
+[![npm version](https://img.shields.io/github/package-json/v/nayan9229/dentity-resolver)](https://github.com/nayan9229/identity-resolver/packages)
+[![Bundle size](https://img.shields.io/badge/gzip-~1.5kB-brightgreen)](https://github.com/nayan9229/identity-resolver)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 ---
@@ -53,23 +53,23 @@ Tier 4 always returns a valid object. Auctions are never blocked.
 
 ```bash
 # npm
-npm install @YOUR_GITHUB_ORG/openrtb-identity-resolver
+npm install @nayan9229/identity-resolver
 
 # yarn
-yarn add @YOUR_GITHUB_ORG/openrtb-identity-resolver
+yarn add @nayan9229/identity-resolver
 ```
 
 Add to `.npmrc` to point at GitHub Packages registry:
 
 ```
-@YOUR_GITHUB_ORG:registry=https://npm.pkg.github.com
+@nayan9229:registry=https://npm.pkg.github.com
 ```
 
 ### CDN / `<script>` tag (no build step)
 
 ```html
 <!-- Latest release from GitHub Packages CDN -->
-<script src="https://cdn.jsdelivr.net/gh/YOUR_GITHUB_ORG/openrtb-identity-resolver@latest/dist/index.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/nayan9229/dentity-resolver@latest/dist/index.umd.js"></script>
 <script>
   const { resolveIdentitySignals, patchBidRequest } = OpenRTBIdentityResolver;
 </script>
@@ -78,7 +78,7 @@ Add to `.npmrc` to point at GitHub Packages registry:
 Or pin to a specific version:
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/YOUR_GITHUB_ORG/openrtb-identity-resolver@1.0.0/dist/index.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/nayan9229/identity-resolver@1.0.0/dist/index.umd.js"></script>
 ```
 
 ---
@@ -88,7 +88,7 @@ Or pin to a specific version:
 ### Option A — patch your bid request directly
 
 ```js
-import { patchBidRequest } from '@YOUR_GITHUB_ORG/openrtb-identity-resolver';
+import { patchBidRequest } from '@nayan9229/identity-resolver';
 
 const bidRequest = {
   id: 'req-abc123',
@@ -112,7 +112,7 @@ sendToPubMatic(bidRequest);
 ### Option B — get signals and apply manually
 
 ```js
-import { resolveIdentitySignals } from '@YOUR_GITHUB_ORG/openrtb-identity-resolver';
+import { resolveIdentitySignals } from '@nayan9229/identity-resolver';
 
 const signals = resolveIdentitySignals();
 
@@ -131,7 +131,7 @@ bidReq.regs.ext      = { gdpr: signals.gdpr, us_privacy: signals.usPrivacy };
 ### Option C — `<script>` tag (no bundler)
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/YOUR_GITHUB_ORG/openrtb-identity-resolver@1.0.0/dist/index.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/nayan9229/identity-resolver@1.0.0/dist/index.umd.js"></script>
 <script>
   window.addEventListener('DOMContentLoaded', function () {
     const { resolveIdentitySignals, patchBidRequest } = OpenRTBIdentityResolver;
@@ -228,7 +228,7 @@ Existing fields on the object are **preserved**. Only the above paths are writte
 Utility: parses a raw `document.cookie`-style string into a plain object.
 
 ```js
-import { parseCookies } from '@YOUR_GITHUB_ORG/openrtb-identity-resolver';
+import { parseCookies } from '@nayan9229/identity-resolver';
 
 parseCookies('foo=bar; baz=qux');
 // → { foo: 'bar', baz: 'qux' }
@@ -400,4 +400,4 @@ Please keep the bundle size under 3 kB and maintain ≥90% test coverage.
 
 ## License
 
-[MIT](LICENSE) © YOUR_GITHUB_ORG
+[MIT](LICENSE) © nayan9229
