@@ -1,0 +1,131 @@
+name: CI / Publish
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  release:
+    types: [published]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  packages: write
+  id-token: write   # required for npm provenance
+
+jobs:
+  # -------------------------------------------------------------------------
+  # Job 1: Lint + Test + Build (runs on every push and PR)
+  # -------------------------------------------------------------------------
+  ci:
+    name: Lint · Test · Build
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x, 22.x]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Test with coverage
+        run: npm run test:coverage
+
+      - name: Upload coverage report
+        if: matrix.node-version == '20.x'
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage/
+          retention-days: 7
+
+      - name: Build
+        run: npm run build
+
+      - name: Check bundle size
+        run: npm run size
+
+      - name: Upload dist artifacts
+        if: matrix.node-version == '20.x'
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+          retention-days: 7
+
+  # -------------------------------------------------------------------------
+  # Job 2: Publish to GitHub Packages (runs only on GitHub Release)
+  # -------------------------------------------------------------------------
+  publish:
+    name: Publish to GitHub Packages
+    needs: ci
+    runs-on: ubuntu-latest
+    if: github.event_name == 'release' && github.event.action == 'published'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          registry-url: 'https://npm.pkg.github.com'
+          scope: '@${{ github.repository_owner }}'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run full test suite
+        run: npm run test:coverage
+
+      - name: Build all formats
+        run: npm run build
+
+      - name: Verify dist files exist
+        run: |
+          for f in dist/index.esm.js dist/index.cjs dist/index.umd.js; do
+            [ -f "$f" ] || (echo "Missing $f" && exit 1)
+          done
+          echo "All dist files present"
+          ls -lh dist/
+
+      - name: Stamp version from release tag
+        run: |
+          TAG="${{ github.event.release.tag_name }}"
+          VERSION="${TAG#v}"
+          npm version "$VERSION" --no-git-tag-version
+          echo "Publishing version $VERSION"
+
+      - name: Publish with provenance
+        run: npm publish --provenance
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Attach dist to release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/index.esm.js
+            dist/index.cjs
+            dist/index.umd.js
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
