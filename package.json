@@ -59,7 +59,7 @@
     "prepublishOnly": "pnpm run lint && pnpm run test:ci && pnpm run build"
   },
   "devDependencies": {
-    "@rollup/plugin-terser": "^0.4.4",
+    "@rollup/plugin-terser": "^1.0.0",
     "@size-limit/preset-small-lib": "^11.0.0",
     "eslint": "^9.0.0",
     "jest": "^29.7.0",
